@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+    </head>
+    <body>
+        <h1>Hanzi Writer</h1>
+        <p>Epic Chinese characters</p>
+        <div id="character-target-div">
+            <div id="inner-character-target-div">
+                <button id="animate-button">Animate</button>
+            </div>
+            <div id="inner-character-target-div2">
+                <button id="animate-button2">Animate (fast)</button>
+            </div>
+        </div>
+        <div id="character-target-1"></div>
+        <button id="animate-button3">Start</button>
+        <div id="character-target-2">
+            <textarea id="text"></textarea>
+        </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <script>
+        var writer = HanziWriter.create('character-target-div', '我', {
+            width: 100,
+            height: 100,
+            padding: 5
+        });
+        var writer2 = HanziWriter.create('character-target-div', '爽', {
+            width: 150,
+            height: 150,
+            padding: 20,
+            strokeColor: '#EE00FF' // pink
+        });
+        var writer3 = HanziWriter.create('character-target-div', '草', {
+            width: 150,
+            height: 150,
+            padding: 5,
+            radicalColor: '#168F16' // green
+        });
+        var writer4 = HanziWriter.create('inner-character-target-div', '国', {
+            width: 100,
+            height: 100,
+            padding: 5,
+            showOutline: true
+        });
+        document.getElementById('animate-button').addEventListener('click', function() {
+            writer4.animateCharacter();
+        });
+        var writer5 = HanziWriter.create('inner-character-target-div2', '激', {
+            width: 100,
+            height: 100,
+            padding: 5,
+            showOutline: false,
+            strokeAnimationSpeed: 5, // 5x normal speed
+            delayBetweenStrokes: 10, // milliseconds
+            radicalColor: '#337ab7' // blue
+        });
+        document.getElementById('animate-button2').addEventListener('click', function() {
+            writer5.animateCharacter();
+        });
+        var writer6 = HanziWriter.create('character-target-div', '轮', {
+            width: 100,
+            height: 100,
+            padding: 5,
+            delayBetweenLoops: 3000
+        });
+        writer6.loopCharacterAnimation();
+
+        var char1 = HanziWriter.create('character-target-1', '很', {
+            width: 100,
+            height: 100,
+            padding: 5,
+            strokeAnimationSpeed: 3, // 5x normal speed
+            delayBetweenStrokes: 10, // milliseconds
+            showCharacter: false
+        });
+        var char2 = HanziWriter.create('character-target-1', '爽', {
+            width: 100,
+            height: 100,
+            padding: 5,
+            strokeAnimationSpeed: 3, // 5x normal speed
+            delayBetweenStrokes: 10, // milliseconds
+            showCharacter: false
+        });
+
+        function chainAnimations() {
+            var delayBetweenAnimations = 500; // milliseconds
+            char1.hideCharacter();
+            char2.hideCharacter();
+
+            char1.animateCharacter({
+                onComplete: function() {
+                setTimeout(function() {
+                    char2.animateCharacter();
+                }, delayBetweenAnimations);
+                }
+            });
+        }
+
+        document.getElementById('animate-button3').addEventListener('click', chainAnimations);
+
+        var writer7 = HanziWriter.create('character-target-2', '测', {
+            width: 150,
+            height: 150,
+            showCharacter: false,
+            padding: 5
+        });
+        writer7.quiz();
+
+        var writer8 = HanziWriter.create('character-target-2', '鬼', {
+            width: 150,
+            height: 150,
+            showCharacter: false,
+            showOutline: false,
+            showHintAfterMisses: 1,
+            highlightOnComplete: false,
+            padding: 5
+        });
+        writer8.quiz();
+
+        var writer9 = HanziWriter.create('character-target-2', '码', {
+            width: 150,
+            height: 150,
+            showCharacter: false,
+            padding: 5
+        });
+        con = document.getElementById('text');
+        writer9.quiz({
+            onMistake: function(strokeData) {
+                con.innerHTML = 'Oh no! you made a mistake on stroke ' + strokeData.strokeNum;
+                con.innerHTML += 'You made ' + strokeData.mistakesOnStroke + ' mistakes on this stroke';
+                con.innerHTML += 'You made ' + strokeData.totalMistakes + ' total mistakes on this quiz';
+                con.innerHTML += 'There are ' + strokeData.strokesRemaining + ' strokes remaining in this character';
+                //con.log('Oh no! you made a mistake on stroke ' + strokeData.strokeNum);
+                //console.log("You've made " + strokeData.mistakesOnStroke + " mistakes on this stroke so far");
+                //console.log("You've made " + strokeData.totalMistakes + " total mistakes on this quiz");
+                //console.log("There are " + strokeData.strokesRemaining + " strokes remaining in this character");
+            },
+            onCorrectStroke: function(strokeData) {
+                con.innerHTML = 'Yes!!! You got stroke ' + strokeData.strokeNum + ' correct!';
+                con.innerHTML += 'You made ' + strokeData.mistakesOnStroke + ' mistakes on this stroke';
+                con.innerHTML += 'You made ' + strokeData.totalMistakes + ' total mistakes on this quiz';
+                con.innerHTML += 'There are ' + strokeData.strokesRemaining + ' strokes remaining in this character';
+                //console.log('Yes!!! You got stroke ' + strokeData.strokeNum + ' correct!');
+                //console.log('You made ' + strokeData.mistakesOnStroke + ' mistakes on this stroke');
+                //console.log("You've made " + strokeData.totalMistakes + ' total mistakes on this quiz');
+                //console.log('There are ' + strokeData.strokesRemaining + ' strokes remaining in this character');
+            },
+            onComplete: function(summaryData) {
+                con.innerHTML = 'You finished drawing ' + summaryData.character;
+                con.innerHTML += 'You made ' + summaryData.totalMistakes + ' total mistakes on this quiz';
+                //console.log('You did it! You finished drawing ' + summaryData.character);
+                //console.log('You made ' + summaryData.totalMistakes + ' total mistakes on this quiz');
+            }
+        });
+      
+      
+    </script>
+</html>
